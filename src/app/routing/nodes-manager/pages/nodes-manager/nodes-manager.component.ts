@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NodesComponent } from '../../components/nodes/nodes.component';
-import { IDraggableItem } from '../../models/node.model';
 
 @Component({
   selector: 'app-nodes-manager',
@@ -10,6 +9,4 @@ import { IDraggableItem } from '../../models/node.model';
   styleUrl: './nodes-manager.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NodesManagerComponent {
-  node!: IDraggableItem;
-}
+export class NodesManagerComponent {}

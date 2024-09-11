@@ -1,12 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { DndDropEvent, DndModule, DropEffect } from 'ngx-drag-drop';
-import { JsonPipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   generateFiles,
   generateFolders,
@@ -25,7 +20,6 @@ import { MatInput } from '@angular/material/input';
     MatListModule,
     DndModule,
     NgTemplateOutlet,
-    JsonPipe,
     MatIcon,
     MatButton,
     FormsModule,
@@ -43,8 +37,6 @@ export class NodesComponent {
 
   draggableList: IDraggableItem[] = generateFolders();
 
-  @Output() emitSelected: EventEmitter<IDraggableItem> = new EventEmitter();
-
   isSelected(item: IDraggableItem) {
     if (this.selectedItems.length) {
       return this.selectedItems.includes(item);
@@ -59,11 +51,13 @@ export class NodesComponent {
     } else {
       this.selectedItems = [];
       this.selectedItem = item;
-      this.emitSelected.emit(item);
     }
   }
 
   onDragged(item: any, list: any[], effect: DropEffect) {
+    console.log(item);
+    console.log(list);
+
     if (effect === 'move') {
       if (this.selectedItems.length) {
         this.selectedItems.forEach((selected) => {
