@@ -1,73 +1,50 @@
 export interface IDraggableItem {
+  id: string;
   content: string;
-  children: IDraggableItem[];
+  index: number;
+  children?: IDraggableItem[];
+  icon: string;
 }
 
-export const NESTED_DATA: IDraggableItem[] = [
-  {
-    content: 'Demo 1',
-    children: [
-      {
-        content: 'Nested 1',
-        children: [],
-      },
-      {
-        content: 'Nested 2',
-        children: [],
-      },
-      {
-        content: 'Nested 3',
-        children: [],
-      },
-    ],
-  },
-  {
-    content: 'Demo 2',
-    children: [],
-  },
-  {
-    content: 'Demo 3',
-    children: [],
-  },
-  {
-    content: 'Demo 4',
-    children: [],
-  },
-  {
-    content: 'Demo 5',
-    children: [],
-  },
-  {
-    content: 'Demo 6',
-    children: [],
-  },
-  {
-    content: 'Demo 7',
-    children: [],
-  },
-  {
-    content: 'Demo 8',
-    children: [],
-  },
-  {
-    content: 'Demo 9',
-    children: [],
-  },
-  {
-    content: 'Demo 10',
-    children: [
-      {
-        content: 'Nested 1',
-        children: [],
-      },
-      {
-        content: 'Nested 2',
-        children: [],
-      },
-      {
-        content: 'Nested 3',
-        children: [],
-      },
-    ],
-  },
-];
+const generateUUID = () => {
+  // Generate a random hexadecimal string
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    let r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+export const generateFolders = (
+  length = 5,
+  startFrom = 0,
+): IDraggableItem[] => {
+  const folders = Array.from(
+    { length },
+    (_, index) => `Folder ${index + startFrom + 1}`,
+  );
+  return folders.map((f, index) => {
+    return {
+      id: generateUUID(),
+      content: f,
+      index,
+      icon: 'folder',
+      children: [],
+    };
+  });
+};
+
+export const generateFiles = (length = 5, startFrom = 0): IDraggableItem[] => {
+  const files = Array.from(
+    { length },
+    (_, index) => `File ${index + startFrom + 1}`,
+  );
+  return files.map((f, index) => {
+    return {
+      id: generateUUID(),
+      content: f,
+      index,
+      icon: 'description',
+    };
+  });
+};

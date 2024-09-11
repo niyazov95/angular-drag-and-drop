@@ -14,7 +14,8 @@ mat-list {
   &-item {
     cursor: pointer !important;
 
-    &:hover {
+    &:hover,
+    &.selected {
       --mdc-list-list-item-container-color: #dadada;
     }
   }

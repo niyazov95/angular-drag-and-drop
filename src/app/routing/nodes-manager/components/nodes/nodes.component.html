@@ -10,9 +10,14 @@
         [dndDraggable]="item"
         dndEffectAllowed="move"
         (dndMoved)="onDragged(item, list, 'move')"
+        [class.mb-3]="!item.children"
       >
-        <mat-list-item class="border ms-n3">
-          <mat-icon matListItemIcon>folder</mat-icon>
+        <mat-list-item
+          class="border ms-n3"
+          (click)="onSelect($event, item)"
+          [class.selected]="isSelected(item)"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
           <span matListItemTitle>{{ item.content }}</span>
         </mat-list-item>
 
@@ -21,7 +26,7 @@
             (dndDrop)="onDrop($event, item.children)"
             dndDropzone
             dndEffectAllowed="move"
-            class="d-flex flex-column pt-2 pb-0 ps-2"
+            class="d-flex flex-column bg-light pt-3 pb-0 ps-3"
           >
             <ng-container
               *ngTemplateOutlet="
@@ -36,12 +41,12 @@
   </ng-template>
 
   <div class="row">
-    <div class="col-12 col-lg-4">
+    <div class="col-6">
       <mat-list
         (dndDrop)="onDrop($event, draggableList)"
         dndDropzone
         dndEffectAllowed="move"
-        class="d-flex flex-column gap-1 p-3 border rounded-3"
+        class="d-flex flex-column bg-light gap-1 p-3 border rounded-3"
       >
         <ng-container
           *ngTemplateOutlet="
@@ -50,6 +55,28 @@
           "
         />
       </mat-list>
+    </div>
+
+    <div class="col-6 d-flex flex-column">
+      @if (selectedItem) {
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="selectedItem.content" />
+        </mat-form-field>
+        <mat-form-field class="mt-2">
+          <mat-label>Icon</mat-label>
+          <input matInput [(ngModel)]="selectedItem.icon" />
+        </mat-form-field>
+      }
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 mt-4">
+      <button (click)="addFolders()" mat-raised-button>Add Folders</button>
+      <button class="ms-2" (click)="addFiles()" mat-raised-button>
+        Add Files
+      </button>
     </div>
   </div>
 </div>

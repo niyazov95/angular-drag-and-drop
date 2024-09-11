@@ -1,9 +1,7 @@
-<div class="wrapper">
-  <aside>
-    <app-nodes></app-nodes>
-  </aside>
-
-  <section>
-    <app-entity-form></app-entity-form>
-  </section>
+<div class="wrapper container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <app-nodes #nodesComponent (emitSelected)="node = $event"></app-nodes>
+    </div>
+  </div>
 </div>
