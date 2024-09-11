@@ -60,7 +60,6 @@ export class NodesComponent {
         this.selectedItems.forEach((selected) => {
           const index = list.indexOf(selected);
           list.splice(index, 1);
-          console.log(list);
         });
       } else {
         const index = list.indexOf(item);
