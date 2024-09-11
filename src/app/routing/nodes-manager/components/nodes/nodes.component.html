@@ -5,20 +5,24 @@
       dndPlaceholderRef
     />
 
-    @for (item of list; track $index) {
+    @for (item of list; track item.id) {
       <div
         [dndDraggable]="item"
         dndEffectAllowed="move"
         (dndMoved)="onDragged(item, list, 'move')"
         [class.mb-3]="!item.children"
       >
-        <mat-list-item
-          class="border ms-n3"
-          (click)="onSelect($event, item)"
-          [class.selected]="isSelected(item)"
-        >
+        <mat-list-item class="border ms-n3" [class.selected]="isSelected(item)">
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
           <span matListItemTitle>{{ item.content }}</span>
+          <div matListItemMeta>
+            <mat-icon
+              [style.pointer-events]="'all'"
+              (click)="onSelect($event, item)"
+            >
+              edit
+            </mat-icon>
+          </div>
         </mat-list-item>
 
         @if (item.children) {

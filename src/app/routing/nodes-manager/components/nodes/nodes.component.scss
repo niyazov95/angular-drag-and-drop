@@ -13,6 +13,7 @@ mat-list {
 
   &-item {
     cursor: pointer !important;
+    pointer-events: none;
 
     &:hover,
     &.selected {

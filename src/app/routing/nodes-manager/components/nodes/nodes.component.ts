@@ -5,6 +5,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import {
   generateFiles,
   generateFolders,
+  generateUUID,
   IDraggableItem,
 } from '../../models/node.model';
 import { MatIcon } from '@angular/material/icon';
@@ -32,43 +33,32 @@ import { MatInput } from '@angular/material/input';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NodesComponent {
-  selectedItems: IDraggableItem[] = [];
   selectedItem!: IDraggableItem | null;
+  shiftPressed = false;
 
   draggableList: IDraggableItem[] = generateFolders();
 
   isSelected(item: IDraggableItem) {
-    if (this.selectedItems.length) {
-      return this.selectedItems.includes(item);
-    } else {
-      return item === this.selectedItem;
-    }
+    return item === this.selectedItem;
   }
 
   onSelect(event: MouseEvent, item: IDraggableItem) {
-    if (event.shiftKey) {
-      this.selectedItems.push(item);
-    } else {
-      this.selectedItems = [];
-      this.selectedItem = item;
-    }
+    this.selectedItem = item;
   }
 
   onDragged(item: any, list: any[], effect: DropEffect) {
+    if (this.shiftPressed) {
+      return;
+    }
     if (effect === 'move') {
-      if (this.selectedItems.length) {
-        this.selectedItems.forEach((selected) => {
-          const index = list.indexOf(selected);
-          list.splice(index, 1);
-        });
-      } else {
-        const index = list.indexOf(item);
-        list.splice(index, 1);
-      }
+      const index = list.indexOf(item);
+      list.splice(index, 1);
     }
   }
 
   onDrop(event: DndDropEvent, list?: any[]) {
+    this.shiftPressed = event.event.shiftKey;
+
     if (list && (event.dropEffect === 'copy' || event.dropEffect === 'move')) {
       let index = event.index;
 
@@ -76,13 +66,11 @@ export class NodesComponent {
         index = list.length;
       }
 
-      if (this.selectedItems.length) {
-        this.selectedItems.forEach((data) => {
-          list.splice(index, 0, data);
-        });
-      } else {
-        list.splice(index, 0, event.data);
+      if (this.shiftPressed) {
+        event.data.id = generateUUID();
       }
+
+      list.splice(index, 0, event.data);
     }
 
     this.selectedItem = null;

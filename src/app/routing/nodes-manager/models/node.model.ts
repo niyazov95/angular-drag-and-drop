@@ -6,7 +6,7 @@ export interface IDraggableItem {
   icon: string;
 }
 
-const generateUUID = () => {
+export const generateUUID = () => {
   // Generate a random hexadecimal string
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     let r = (Math.random() * 16) | 0,
