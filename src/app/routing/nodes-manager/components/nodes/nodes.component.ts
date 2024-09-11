@@ -55,9 +55,6 @@ export class NodesComponent {
   }
 
   onDragged(item: any, list: any[], effect: DropEffect) {
-    console.log(item);
-    console.log(list);
-
     if (effect === 'move') {
       if (this.selectedItems.length) {
         this.selectedItems.forEach((selected) => {
