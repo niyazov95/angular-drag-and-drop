@@ -1,4 +1,21 @@
-cdk-tree-node {
-  display: flex;
-  align-items: center;
+.dndDraggingSource {
+  opacity: 0.5;
+  transform: scale(0.98);
+  pointer-events: none;
+
+  & > * {
+    pointer-events: none;
+  }
+}
+
+mat-list {
+  --mdc-list-list-item-container-color: #f1f1f1;
+
+  &-item {
+    cursor: pointer !important;
+
+    &:hover {
+      --mdc-list-list-item-container-color: #dadada;
+    }
+  }
 }

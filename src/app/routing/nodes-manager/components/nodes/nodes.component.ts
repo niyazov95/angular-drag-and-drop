@@ -1,58 +1,37 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { CdkTreeModule } from '@angular/cdk/tree';
-import { MatIconButton } from '@angular/material/button';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatListModule } from '@angular/material/list';
+import { DndDropEvent, DndModule, DropEffect } from 'ngx-drag-drop';
+import { JsonPipe, NgTemplateOutlet } from '@angular/common';
+import { IDraggableItem, NESTED_DATA } from '../../models/node.model';
 import { MatIcon } from '@angular/material/icon';
-import { ComplexDataStore, TransformedData } from '../../utils/node-factory';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { AsyncPipe } from '@angular/common';
-import {
-  CdkDrag,
-  CdkDragDrop, CdkDragPlaceholder,
-  CdkDropList,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-nodes',
   standalone: true,
-  imports: [
-    CdkTreeModule,
-    MatIconButton,
-    MatIcon,
-    MatProgressSpinner,
-    AsyncPipe,
-    CdkDropList,
-    CdkDrag,
-    CdkDragPlaceholder,
-  ],
+  imports: [MatListModule, DndModule, NgTemplateOutlet, JsonPipe, MatIcon],
   templateUrl: './nodes.component.html',
   styleUrl: './nodes.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NodesComponent implements OnInit {
-  private readonly _dataStore = new ComplexDataStore();
+export class NodesComponent {
+  draggableList: IDraggableItem[] = NESTED_DATA;
 
-  areRootsLoading = this._dataStore.areRootsLoading;
-  roots = this._dataStore.roots;
-
-  getChildren = (node: TransformedData) =>
-    this._dataStore.getChildren(node.raw.id);
-  trackBy = (index: number, node: TransformedData) => this.expansionKey(node);
-  expansionKey = (node: TransformedData) => node.raw.id;
-
-  ngOnInit() {
-    this._dataStore.loadRoots();
-  }
-
-  onExpand(node: TransformedData, expanded: boolean) {
-    if (expanded) {
-      // Only perform a load on expansion.
-      this._dataStore.loadChildren(node.raw.id);
+  onDragged(item: any, list: any[], effect: DropEffect) {
+    if (effect === 'move') {
+      const index = list.indexOf(item);
+      list.splice(index, 1);
     }
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    // moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+  onDrop(event: DndDropEvent, list?: any[]) {
+    if (list && (event.dropEffect === 'copy' || event.dropEffect === 'move')) {
+      let index = event.index;
+
+      if (typeof index === 'undefined') {
+        index = list.length;
+      }
+
+      list.splice(index, 0, event.data);
+    }
   }
 }

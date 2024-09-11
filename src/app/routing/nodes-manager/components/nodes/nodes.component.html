@@ -1,51 +1,55 @@
-@if (areRootsLoading | async) {
-  <mat-spinner></mat-spinner>
-} @else {
-  <cdk-tree
-    #tree
-    [dataSource]="roots"
-    [childrenAccessor]="getChildren"
-    [trackBy]="trackBy"
-    [expansionKey]="expansionKey"
-    cdkDropList
-    (cdkDropListDropped)="drop($event)"
-  >
-    <cdk-tree-node
-      cdkDrag
-      [cdkDragData]="node"
-      *cdkTreeNodeDef="let node"
-      cdkTreeNodePadding
-      [cdkTreeNodeTypeaheadLabel]="node.raw.name"
-      [isExpandable]="node.isExpandable()"
-      (expandedChange)="onExpand(node, $event)"
-    >
-      <!-- Spinner when node is loading children; this replaces the expand button. -->
-      @if (node.areChildrenLoading()) {
-        <mat-spinner diameter="48" mode="indeterminate"></mat-spinner>
-      }
+<div class="container-fluid">
+  <ng-template #recursiveList let-list>
+    <mat-list-item
+      class="dndPlaceholder border bg-opacity-25 mb-1"
+      dndPlaceholderRef
+    />
 
-      @if (!node.areChildrenLoading() && node.isExpandable()) {
-        <button
-          mat-icon-button
-          cdkTreeNodeToggle
-          [attr.aria-label]="'Toggle ' + node.raw.name"
-        >
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}
-          </mat-icon>
-        </button>
-      }
+    @for (item of list; track $index) {
+      <div
+        [dndDraggable]="item"
+        dndEffectAllowed="move"
+        (dndMoved)="onDragged(item, list, 'move')"
+      >
+        <mat-list-item class="border ms-n3">
+          <mat-icon matListItemIcon>folder</mat-icon>
+          <span matListItemTitle>{{ item.content }}</span>
+        </mat-list-item>
 
-      <!-- Spacer for leaf nodes -->
-      @if (node.isLeaf()) {
-        <div class="toggle-spacer"></div>
-      }
+        @if (item.children) {
+          <mat-list
+            (dndDrop)="onDrop($event, item.children)"
+            dndDropzone
+            dndEffectAllowed="move"
+            class="d-flex flex-column pt-2 pb-0 ps-2"
+          >
+            <ng-container
+              *ngTemplateOutlet="
+                recursiveList;
+                context: { $implicit: item.children }
+              "
+            />
+          </mat-list>
+        }
+      </div>
+    }
+  </ng-template>
 
-      <span>{{ node.raw.name }}</span>
-    </cdk-tree-node>
-  </cdk-tree>
-}
-
-<!-- Copyright 2024 Google LLC. All Rights Reserved.
-    Use of this source code is governed by an MIT-style license that
-    can be found in the LICENSE file at https://angular.io/license -->
+  <div class="row">
+    <div class="col-12 col-lg-4">
+      <mat-list
+        (dndDrop)="onDrop($event, draggableList)"
+        dndDropzone
+        dndEffectAllowed="move"
+        class="d-flex flex-column gap-1 p-3 border rounded-3"
+      >
+        <ng-container
+          *ngTemplateOutlet="
+            recursiveList;
+            context: { $implicit: draggableList }
+          "
+        />
+      </mat-list>
+    </div>
+  </div>
+</div>
